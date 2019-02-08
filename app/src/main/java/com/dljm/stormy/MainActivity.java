@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -19,6 +22,8 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private CurrentWeather currentWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +50,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
-                        Log.v(TAG, response.body().string());
+                        String jsonData = response.body().string();
+                        Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
+                            //get the forecast details and parse the JSON object
+                            currentWeather = getCurrentDetails(jsonData);
 
                         } else {
                             alertUserAboutError(getString(R.string.error_message));
                         }
                     } catch (IOException e) {
                         Log.e(TAG, "IO Exception caught:", e);
+                    } catch(JSONException e){
+                        Log.e(TAG, "JSON Exception caught:", e);
                     }
                 }//end onResponse
             });//end call.enqueue
@@ -62,6 +72,32 @@ public class MainActivity extends AppCompatActivity {
     /*
         Helper Functions for onCreate method
      */
+
+    /*
+    * parse the JSON object
+    * @param string jsonData - the string of the JSON object received from Dark Sky
+    * */
+    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        Log.i(TAG, "From JSON: " + timezone);
+
+        JSONObject currently = forecast.getJSONObject("currently");
+        CurrentWeather currentWeather = new CurrentWeather();
+        currentWeather.setTimeZone(timezone);
+        currentWeather.setHumidity(currently.getDouble("humidity"));
+        currentWeather.setIcon(currently.getString("icon"));
+        currentWeather.setTime(currently.getLong("time")); //UNIX time
+        currentWeather.setSummary(currently.getString("summary"));
+        currentWeather.setTemperature(currently.getDouble("temperature"));
+        currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
+        //TODO add location dynamically
+        Log.d(TAG, currentWeather.getFormattedTime());
+
+        return currentWeather;
+    }//end getCurrentDetails
+
     //check if internet is available return true if connected
     private boolean isNetworkAvailable() {
         //get current network connectivity information
@@ -79,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }//end isNetworkAvailable
 
     //use a dialog fragment to display errors to user
+    //@param - String message - the message displayed in the error prompt
     private void alertUserAboutError(String message) {
         final Bundle args = new Bundle();
         args.putString("message_key", message);
