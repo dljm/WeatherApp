@@ -1,12 +1,17 @@
 package com.dljm.stormy;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dljm.stormy.databinding.ActivityMainBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,12 +33,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //set up data binding class for activity_main.xml
+        final ActivityMainBinding binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
+
+        TextView darkSky = findViewById(R.id.darkskyAttribution);
+        darkSky.setMovementMethod(LinkMovementMethod.getInstance());
 
         String apiKey = "0afd324ed5cce01c640d7d78fe0d7fb9";
-        double latitude = 37.8267;
-        double longitude = -122.4233;
-        String forecastURL = "https://api.darksky.net/forecast/" + apiKey + "/" + latitude + "," + longitude;
+        double latitude = 46.3091;
+        double longitude = -79.4608;
+        String forecastURL = "https://api.darksky.net/forecast/" + apiKey + "/" + latitude + "," + longitude +
+                "?exclude=minutely,flags&units=ca";
 
         //ensure the network is available before attempting to use the network
         if(isNetworkAvailable()) {
@@ -55,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             //get the forecast details and parse the JSON object
                             currentWeather = getCurrentDetails(jsonData);
+
+                            //bind data to new binding variable
+                            binding.setWeather(currentWeather);
 
                         } else {
                             alertUserAboutError(getString(R.string.error_message));
@@ -93,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         currentWeather.setTemperature(currently.getDouble("temperature"));
         currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
         //TODO add location dynamically
-        Log.d(TAG, currentWeather.getFormattedTime());
+        currentWeather.setLocationLabel("North Bay, ON");
 
         return currentWeather;
     }//end getCurrentDetails
