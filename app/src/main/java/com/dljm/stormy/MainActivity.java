@@ -2,12 +2,15 @@ package com.dljm.stormy;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,19 +32,33 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private CurrentWeather currentWeather;
+    private ImageView iconImageView;
+
+    final double latitude = 46.3091;
+    final double longitude = -79.4608;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getForecast(latitude, longitude);
+    }//end onCreate
+
+    /*
+        Helper Functions for onCreate method
+     */
+
+    // @summary - makes the call to Dark Sky to get forecast data and updates Data model contents
+    private void getForecast(double latitude, double longitude) {
         //set up data binding class for activity_main.xml
         final ActivityMainBinding binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
 
+        //add the dark sky attribution link
         TextView darkSky = findViewById(R.id.darkskyAttribution);
         darkSky.setMovementMethod(LinkMovementMethod.getInstance());
+        //dynamically update image icon in UI
+        iconImageView = findViewById(R.id.iconImageView);
 
         String apiKey = "0afd324ed5cce01c640d7d78fe0d7fb9";
-        double latitude = 46.3091;
-        double longitude = -79.4608;
         String forecastURL = "https://api.darksky.net/forecast/" + apiKey + "/" + latitude + "," + longitude +
                 "?exclude=minutely,flags&units=ca";
 
@@ -56,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onFailure(Call call, IOException e) {
                     Log.e(TAG, "IO Exception caught", e);
                 }//end onFailure
-
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
@@ -66,25 +82,42 @@ public class MainActivity extends AppCompatActivity {
                             //get the forecast details and parse the JSON object
                             currentWeather = getCurrentDetails(jsonData);
 
+                            //update display weather object needed for refresh functionality
+//                            CurrentWeather displayWeather = new CurrentWeather(
+//                                    currentWeather.getLocationLabel(),
+//                                    currentWeather.getIcon(),
+//                                    currentWeather.getTime(),
+//                                    currentWeather.getTemperature(),
+//                                    currentWeather.getHumidity(),
+//                                    currentWeather.getSummary(),
+//                                    currentWeather.getPrecipChance(),
+//                                    currentWeather.getTimeZone()
+//                            );
                             //bind data to new binding variable
                             binding.setWeather(currentWeather);
 
+                            //update the weather image icon in the UI this must be done on the Main thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Drawable drawable = getResources().getDrawable(currentWeather.getIconId());
+                                    iconImageView.setImageDrawable(drawable);
+                                }
+                            });
                         } else {
                             alertUserAboutError(getString(R.string.error_message));
                         }
                     } catch (IOException e) {
                         Log.e(TAG, "IO Exception caught:", e);
+                        alertUserAboutError("The weather data took too long to load, please tap refresh to try again.");
                     } catch(JSONException e){
                         Log.e(TAG, "JSON Exception caught:", e);
+                        alertUserAboutError(getString(R.string.error_message));
                     }
                 }//end onResponse
             });//end call.enqueue
         }//end if isNetworkAvailable
-    }//end onCreate
-
-    /*
-        Helper Functions for onCreate method
-     */
+    }//end getForcast
 
     /*
     * parse the JSON object
@@ -136,4 +169,11 @@ public class MainActivity extends AppCompatActivity {
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), "error_dialog");
     }//end alertUser
+
+    //adds button functionality to refresh icon in UI
+    public void refreshOnClick(View view){
+        Toast.makeText(this,"Refreshing Data", Toast.LENGTH_LONG).show();
+        getForecast(latitude, longitude);
+        //dialog.hide();
+    }//end refreshOnClick
 }//end MainActivity
