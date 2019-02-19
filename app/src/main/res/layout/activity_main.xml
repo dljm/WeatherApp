@@ -7,10 +7,11 @@
             name="weather"
             type="com.dljm.stormy.CurrentWeather"/>
     </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@color/colorPrimary"
         tools:context=".MainActivity">
 
         <TextView
@@ -175,11 +176,38 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:onClick="refreshOnClick"
-            app:layout_constraintBottom_toTopOf="@+id/locationValue"
+            app:layout_constraintBottom_toTopOf="@+id/darkskyAttribution"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/summaryValue"
             app:srcCompat="@drawable/refresh" />
+
+        <RelativeLayout
+            android:id="@+id/loadingPanel"
+            style="@style/GenericProgressBackground"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="55dp"
+                android:layout_height="55dp" />
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/refreshLoad"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/refreshIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/refreshIcon" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

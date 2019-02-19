@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dljm.stormy.databinding.ActivityMainBinding;
 
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CurrentWeather currentWeather;
     private ImageView iconImageView;
+    private ActivityMainBinding binding;
 
     final double latitude = 46.3091;
     final double longitude = -79.4608;
@@ -40,18 +40,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //set up data binding class for activity_main.xml
+        binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
+        //on app startup show a loading screen for first weather request
+        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
         getForecast(latitude, longitude);
     }//end onCreate
-
     /*
         Helper Functions for onCreate method
      */
-
     // @summary - makes the call to Dark Sky to get forecast data and updates Data model contents
     private void getForecast(double latitude, double longitude) {
-        //set up data binding class for activity_main.xml
-        final ActivityMainBinding binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
-
         //add the dark sky attribution link
         TextView darkSky = findViewById(R.id.darkskyAttribution);
         darkSky.setMovementMethod(LinkMovementMethod.getInstance());
@@ -72,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e(TAG, "IO Exception caught", e);
+                    alertUserAboutError("Error connecting to server. Please tap the refresh icon to try again.");
                 }//end onFailure
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
@@ -82,17 +82,6 @@ public class MainActivity extends AppCompatActivity {
                             //get the forecast details and parse the JSON object
                             currentWeather = getCurrentDetails(jsonData);
 
-                            //update display weather object needed for refresh functionality
-//                            CurrentWeather displayWeather = new CurrentWeather(
-//                                    currentWeather.getLocationLabel(),
-//                                    currentWeather.getIcon(),
-//                                    currentWeather.getTime(),
-//                                    currentWeather.getTemperature(),
-//                                    currentWeather.getHumidity(),
-//                                    currentWeather.getSummary(),
-//                                    currentWeather.getPrecipChance(),
-//                                    currentWeather.getTimeZone()
-//                            );
                             //bind data to new binding variable
                             binding.setWeather(currentWeather);
 
@@ -102,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     Drawable drawable = getResources().getDrawable(currentWeather.getIconId());
                                     iconImageView.setImageDrawable(drawable);
+                                    //findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                                 }
                             });
                         } else {
@@ -114,6 +104,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(TAG, "JSON Exception caught:", e);
                         alertUserAboutError(getString(R.string.error_message));
                     }
+                    //hide loading circles
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                            findViewById(R.id.refreshLoad).setVisibility(View.GONE);
+                        }
+                    });
                 }//end onResponse
             });//end call.enqueue
         }//end if isNetworkAvailable
@@ -172,8 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
     //adds button functionality to refresh icon in UI
     public void refreshOnClick(View view){
-        Toast.makeText(this,"Refreshing Data", Toast.LENGTH_LONG).show();
+        findViewById(R.id.refreshLoad).setVisibility(View.VISIBLE);
         getForecast(latitude, longitude);
-        //dialog.hide();
     }//end refreshOnClick
 }//end MainActivity
