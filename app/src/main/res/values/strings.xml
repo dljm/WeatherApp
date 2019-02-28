@@ -5,4 +5,6 @@
     <string name="error_button_ok">OK</string>
     <string name="network_unavailable_message">Sorry, the network is unavailable.</string>
     <string name="dark_sky_message"><a href="https://darksky.net/poweredby">Powered by Dark Sky</a></string>
+    <string name="permission_rationale">Google play location services are required for this app to function.</string>
+    <string name="timeout_error">The weather data took too long to load, please tap refresh to try again.</string>
 </resources>
