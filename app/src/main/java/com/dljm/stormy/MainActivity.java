@@ -2,6 +2,7 @@ package com.dljm.stormy;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private CurrentWeather currentWeather;
+    private HourlyWeather hourlyWeather;
+    private DailyWeather dailyWeather;
+
+
     private ImageView iconImageView;
     private ActivityMainBinding binding;
 
@@ -208,6 +214,8 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             //get the forecast details and parse the JSON object
                             currentWeather = getCurrentDetails(jsonData);
+                            hourlyWeather = getHourlyDetails(jsonData);
+                            dailyWeather = getDailyDetails(jsonData);
 
                             //bind data to new binding variable
                             binding.setWeather(currentWeather);
@@ -243,6 +251,65 @@ public class MainActivity extends AppCompatActivity {
         }//end if isNetworkAvailable
     }//end getForcast
 
+    private DailyWeather getDailyDetails(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        JSONObject daily = forecast.getJSONObject("daily");
+        JSONArray days = daily.getJSONArray("data");
+        int numDays = days.length();
+
+        //create a new object to store hourly weather data
+        DailyWeather dailyWeather = new DailyWeather(numDays);
+        dailyWeather.setMainSummary(daily.getString("summary"));
+        dailyWeather.setMainIcon(daily.getString("icon"));
+        dailyWeather.setNumDays(numDays);
+        dailyWeather.setTimeZone(timezone);
+
+        JSONObject currentDay;
+        for(int i = 0; i < numDays; i++){
+            currentDay = days.getJSONObject(i);
+            dailyWeather.setTime(i, currentDay.getLong("time"));
+            dailyWeather.setSummaries(i, currentDay.getString("summary"));
+            dailyWeather.setIcons(i, currentDay.getString("icon"));
+            dailyWeather.setPrecipChance(i, currentDay.getDouble("precipProbability"));
+            //there is also times for low and high temps available
+            dailyWeather.setMaxTemperatures(i, currentDay.getDouble("temperatureHigh"));
+            dailyWeather.setMinTemperatures(i, currentDay.getDouble("temperatureLow"));
+            dailyWeather.setHumidity(i, currentDay.getDouble("humidity"));
+        }
+
+        return dailyWeather;
+    }
+
+    private HourlyWeather getHourlyDetails(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        String timezone = forecast.getString("timezone");
+        JSONObject hourly = forecast.getJSONObject("hourly");
+        JSONArray hours = hourly.getJSONArray("data");
+        int numHours = hours.length();
+
+        //create a new object to store hourly weather data
+        HourlyWeather hourlyWeather = new HourlyWeather(numHours);
+        hourlyWeather.setMainSummary(hourly.getString("summary"));
+        hourlyWeather.setMainIcon(hourly.getString("icon"));
+        hourlyWeather.setNumHours(numHours);
+        hourlyWeather.setTimeZone(timezone);
+
+        JSONObject currentHour;
+        for(int i = 0; i < numHours; i++){
+            currentHour = hours.getJSONObject(i);
+            hourlyWeather.setTime(i, currentHour.getLong("time"));
+            hourlyWeather.setSummaries(i, currentHour.getString("summary"));
+            hourlyWeather.setIcons(i, currentHour.getString("icon"));
+            hourlyWeather.setPrecipChance(i, currentHour.getDouble("precipProbability"));
+            //there is also times for low and high temps available
+            hourlyWeather.setApparentTemperature(i, currentHour.getDouble("apparentTemperature"));
+            hourlyWeather.setHumidity(i, currentHour.getDouble("humidity"));
+        }
+
+        return hourlyWeather;
+    }
+
     /*
     * parse the JSON object
     * @param string jsonData - the string of the JSON object received from Dark Sky
@@ -262,6 +329,13 @@ public class MainActivity extends AppCompatActivity {
         currentWeather.setSummary(currently.getString("summary"));
         currentWeather.setTemperature(currently.getDouble("temperature"));
         currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
+
+        JSONObject hourly = forecast.getJSONObject("hourly");
+
+
+
+        JSONObject daily = forecast.getJSONObject("daily");
+
 
         //dynamically get the city name
         Geocoder gcd = new Geocoder(this, Locale.getDefault());
@@ -316,4 +390,17 @@ public class MainActivity extends AppCompatActivity {
         }
         getForecast(latitude, longitude);
     }//end refreshOnClick
+
+    public void startForecast(View view){
+        //use an intent to indicate that we want to switch to a new activity
+        Intent intent = new Intent(this, ForecastActivity.class);
+        intent.putExtra("serial_current", currentWeather); //add all the relevant forecast data to display in new activity
+        intent.putExtra("serial_hourly", hourlyWeather);
+        intent.putExtra("serial_daily", dailyWeather);
+
+        startActivity(intent); //start the new activity
+
+
+    }
+
 }//end MainActivity

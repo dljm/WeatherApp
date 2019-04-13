@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout">
+
+    <data>
+
+        <variable
+            name="weather"
+            type="com.dljm.stormy.CurrentWeather" />
+
+        <variable
+            name="hourly"
+            type="com.dljm.stormy.HourlyWeather" />
+
+        <variable
+            name="daily"
+            type="com.dljm.stormy.DailyWeather" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        tools:context=".ForecastActivity">
+
+        <TextView
+            android:id="@+id/forecastTimeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{weather.formattedTime != null ? String.valueOf(weather.formattedTime) : `5:00PM`, default=`5:00 PM`}"
+            android:textColor="@color/half_white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/forecastLocation" />
+
+        <TextView
+            android:id="@+id/currentTemperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{String.valueOf(Math.round(weather.temperature)), default=`20`}"
+            android:textColor="@android:color/white"
+            android:textSize="75sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/forecastTimeValue" />
+
+        <Button
+            android:id="@+id/forecastButtonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="25dp"
+            android:background="@color/half_white"
+            android:onClick="exitForecast"
+            android:text="Back"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/forecastIconImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="42dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/forecastLocation"
+            app:layout_constraintEnd_toStartOf="@+id/forecastLocation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/clear_day" />
+
+        <TextView
+            android:id="@+id/forecastLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="32dp"
+            android:text="@{weather.locationLabel ?? `North Bay, ON`, default=`North Bay, ON`}"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/currentDegreeImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toEndOf="@+id/currentTemperature"
+            app:layout_constraintTop_toTopOf="@+id/currentTemperature"
+            app:srcCompat="@drawable/degree" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/forecastIcon0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyGuide"
+            app:layout_constraintTop_toBottomOf="@+id/dailyText0"
+            app:srcCompat="@drawable/clear_day" />
+
+        <ImageView
+            android:id="@+id/forecastIcon1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyGuide2"
+            app:layout_constraintTop_toBottomOf="@+id/dailyText1"
+            app:srcCompat="@drawable/clear_day" />
+
+        <ImageView
+            android:id="@+id/forecastIcon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyGuide3"
+            app:layout_constraintTop_toBottomOf="@+id/dailyText2"
+            app:srcCompat="@drawable/clear_day" />
+
+        <ImageView
+            android:id="@+id/forecastIcon3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyGuide4"
+            app:layout_constraintTop_toBottomOf="@+id/dailyText3"
+            app:srcCompat="@drawable/clear_day" />
+
+        <ImageView
+            android:id="@+id/forecastIcon4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyGuide5"
+            app:layout_constraintTop_toBottomOf="@+id/dailyText4"
+            app:srcCompat="@drawable/clear_day" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyGuide2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.28" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyGuide3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.46" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyGuide4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.64" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyGuide5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.82" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyGuide6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+        <TextView
+            android:id="@+id/dailyText0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{daily.formattedTime != null ? String.valueOf(daily.formattedTime[0]) : `Monday`, default=`Monday`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintTop_toTopOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/dailyHigh0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.maxTemperatures[0])), default=`20`}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon0" />
+
+        <TextView
+            android:id="@+id/dailyLow0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.minTemperatures[0])), default=`16`}"
+            android:textColor="@color/half_white"
+            app:layout_constraintStart_toEndOf="@+id/dailySep0"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon0" />
+
+        <TextView
+            android:id="@+id/dailySep0"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon0" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyTextGuide0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.135" />
+
+        <TextView
+            android:id="@+id/dailyText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{daily.formattedTime != null ? String.valueOf(daily.formattedTime[1]) : `Tuesday`, default=`Tuesday`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintTop_toTopOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/dailyHigh1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.maxTemperatures[1])), default=`21`}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/dailySep1"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon1" />
+
+        <TextView
+            android:id="@+id/dailyLow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.minTemperatures[1])), default=`19`}"
+            android:textColor="@color/half_white"
+            app:layout_constraintStart_toEndOf="@+id/dailySep1"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon1" />
+
+        <TextView
+            android:id="@+id/dailySep1"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon1" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyTextGuide1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.315" />
+
+        <TextView
+            android:id="@+id/dailyText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{daily.formattedTime != null ? String.valueOf(daily.formattedTime[2]) : `Wednesday`, default=`Wednesday`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintTop_toTopOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/dailyHigh2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.maxTemperatures[2])), default=`19`}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/dailySep2"
+            app:layout_constraintTop_toTopOf="@+id/dailySep2" />
+
+        <TextView
+            android:id="@+id/dailyLow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.minTemperatures[2])), default=`13`}"
+            android:textColor="@color/half_white"
+            app:layout_constraintStart_toEndOf="@+id/dailySep2"
+            app:layout_constraintTop_toTopOf="@+id/dailySep2" />
+
+        <TextView
+            android:id="@+id/dailySep2"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon2" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyTextGuide2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.495" />
+
+        <TextView
+            android:id="@+id/dailyText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{daily.formattedTime != null ? String.valueOf(daily.formattedTime[3]) : `Thursday`, default=`Thursday`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintTop_toTopOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/dailyHigh3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.maxTemperatures[3])), default=`19`}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon3" />
+
+        <TextView
+            android:id="@+id/dailyLow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.minTemperatures[3])), default=`14`}"
+            android:textColor="@color/half_white"
+            app:layout_constraintStart_toEndOf="@+id/dailySep3"
+            app:layout_constraintTop_toTopOf="@+id/dailySep3" />
+
+        <TextView
+            android:id="@+id/dailySep3"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon3" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyTextGuide3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.675" />
+
+        <TextView
+            android:id="@+id/dailyText4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{daily.formattedTime != null ? String.valueOf(daily.formattedTime[4]) : `Friday`, default=`Friday`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintTop_toTopOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/dailyHigh4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.maxTemperatures[4])), default=`24`}"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/dailySep4"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon4" />
+
+        <TextView
+            android:id="@+id/dailyLow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@{String.valueOf(Math.round(daily.minTemperatures[4])), default=`21`}"
+            android:textColor="@color/half_white"
+            app:layout_constraintStart_toEndOf="@+id/dailySep4"
+            app:layout_constraintTop_toTopOf="@+id/dailySep4" />
+
+        <TextView
+            android:id="@+id/dailySep4"
+            android:layout_width="4dp"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintTop_toBottomOf="@+id/forecastIcon4" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/weeklyTextGuide4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.855" />
+
+        <TextView
+            android:id="@+id/weeklySummary"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{daily.mainSummary ?? `Weekly Summary`, default=`Weekly Summary`}"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/currentTemperature" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/hourlySeperator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/hourlySeperator2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.66" />
+
+        <TextView
+            android:id="@+id/hourlySummary"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{hourly.mainSummary ?? `Hourly Summary`, default=`Hourly Summary`}"
+            android:textAlignment="center"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/hourlySeperator2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/hourlySeperator" />
+
+        <ImageView
+            android:id="@+id/hourIcon0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintTop_toBottomOf="@+id/hour0"
+            app:srcCompat="@drawable/clear_day" />
+
+        <TextView
+            android:id="@+id/hour0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{hourly.formattedTime != null ? String.valueOf(hourly.formattedTime[0]) : `Now`, default=`Now`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintTop_toTopOf="@+id/hourlySeperator2" />
+
+        <TextView
+            android:id="@+id/hourTemp0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{String.valueOf(Math.round(hourly.apparentTemperatures[0])), default=`14`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide0"
+            app:layout_constraintTop_toBottomOf="@+id/hourIcon0" />
+
+        <ImageView
+            android:id="@+id/hourIcon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintTop_toBottomOf="@+id/hour2"
+            app:srcCompat="@drawable/clear_day" />
+
+        <TextView
+            android:id="@+id/hour2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{hourly.formattedTime != null ? String.valueOf(hourly.formattedTime[2]) : `10am`, default=`10am`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintTop_toTopOf="@+id/hourlySeperator2" />
+
+        <TextView
+            android:id="@+id/hourTemp2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{String.valueOf(Math.round(hourly.apparentTemperatures[2])), default=`17`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide1"
+            app:layout_constraintTop_toBottomOf="@+id/hourIcon4" />
+
+        <ImageView
+            android:id="@+id/hourIcon4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintTop_toBottomOf="@+id/hour2"
+            app:srcCompat="@drawable/clear_day" />
+
+        <TextView
+            android:id="@+id/hour4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{hourly.formattedTime != null ? String.valueOf(hourly.formattedTime[4]) : `12pm`, default=`12pm`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintTop_toTopOf="@+id/hourlySeperator2" />
+
+        <TextView
+            android:id="@+id/hourTemp4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{String.valueOf(Math.round(hourly.apparentTemperatures[4])), default=`19`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintHorizontal_bias="0.291"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide2"
+            app:layout_constraintTop_toBottomOf="@+id/hourIcon4" />
+
+        <ImageView
+            android:id="@+id/hourIcon6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintTop_toBottomOf="@+id/hour6"
+            app:srcCompat="@drawable/clear_day" />
+
+        <TextView
+            android:id="@+id/hour6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{hourly.formattedTime != null ? String.valueOf(hourly.formattedTime[6]) : `2pm`, default=`2pm`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintTop_toTopOf="@+id/hourlySeperator2" />
+
+        <TextView
+            android:id="@+id/hourTemp6"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{String.valueOf(Math.round(hourly.apparentTemperatures[6])), default=`20`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide3"
+            app:layout_constraintTop_toBottomOf="@+id/hourIcon6" />
+
+        <ImageView
+            android:id="@+id/hourIcon8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="0dp"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintTop_toBottomOf="@+id/hour8"
+            app:srcCompat="@drawable/clear_day" />
+
+        <TextView
+            android:id="@+id/hour8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{hourly.formattedTime != null ? String.valueOf(hourly.formattedTime[8]) : `4pm`, default=`4pm`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintTop_toTopOf="@+id/hourlySeperator2" />
+
+        <TextView
+            android:id="@+id/hourTemp8"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@{String.valueOf(Math.round(hourly.apparentTemperatures[8])), default=`19`}"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            app:layout_constraintEnd_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintStart_toStartOf="@+id/weeklyTextGuide4"
+            app:layout_constraintTop_toBottomOf="@+id/hourIcon8" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

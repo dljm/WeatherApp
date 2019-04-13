@@ -1,10 +1,11 @@
 package com.dljm.stormy;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CurrentWeather {
+public class CurrentWeather implements Serializable {
     private String locationLabel;
     private String icon;
     private long time;
