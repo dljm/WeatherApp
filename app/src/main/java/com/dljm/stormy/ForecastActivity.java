@@ -31,8 +31,6 @@ public class ForecastActivity extends AppCompatActivity {
         hourlyWeather = (HourlyWeather) getIntent().getSerializableExtra("serial_hourly");
         dailyWeather = (DailyWeather) getIntent().getSerializableExtra("serial_daily");
 
-        Log.d(TAG, currentWeather.getLocationLabel());
-
         //set up data binding class for activity_forecast.xml
         binding = DataBindingUtil.setContentView(ForecastActivity.this, R.layout.activity_forecast);
         //bind data to new binding variable
@@ -57,7 +55,6 @@ public class ForecastActivity extends AppCompatActivity {
             hourlyIcons[i] = findViewById(getResources().getIdentifier(hourlyIconId, "id", getPackageName()));
         }
 
-
         //update the weather image icons in the UI this must be done on the Main thread
         runOnUiThread(new Runnable() {
             @Override
@@ -77,11 +74,9 @@ public class ForecastActivity extends AppCompatActivity {
                     //want hours 2 hours apart i.e. i*2
                     hourlyIcons[i].setImageDrawable(getResources().getDrawable(hourlyWeather.getIcons(i*2)));
                 }
-
             }
         });
-
-    }
+    }//end onCreate
 
 
 

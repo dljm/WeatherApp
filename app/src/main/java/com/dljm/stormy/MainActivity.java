@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                             dailyWeather = getDailyDetails(jsonData);
 
                             //bind data to new binding variable
+                            //only the currentWeather object is used in the main activity interface
                             binding.setWeather(currentWeather);
 
                             //update the weather image icon in the UI this must be done on the Main thread
@@ -330,13 +331,6 @@ public class MainActivity extends AppCompatActivity {
         currentWeather.setTemperature(currently.getDouble("temperature"));
         currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
 
-        JSONObject hourly = forecast.getJSONObject("hourly");
-
-
-
-        JSONObject daily = forecast.getJSONObject("daily");
-
-
         //dynamically get the city name
         Geocoder gcd = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
@@ -400,7 +394,6 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(intent); //start the new activity
 
-
-    }
+    }//end startForecast
 
 }//end MainActivity
