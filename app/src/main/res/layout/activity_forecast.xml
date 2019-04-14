@@ -83,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginTop="32dp"
-            android:text="@{weather.locationLabel ?? `North Bay, ON`, default=`North Bay, ON`}"
+            android:text="@{weather.locationLabel ?? `North Bay`, default=`North Bay`}"
             android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"

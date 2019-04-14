@@ -67,12 +67,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //set up location services
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            getLastLocation();
+        }
 
         //set up data binding class for activity_main.xml
         binding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         //on app startup show a loading screen for first weather request
-        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-        getForecast(latitude, longitude);
+        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE); //show that the app is loading
+        getForecast(latitude, longitude); //perform the DarkSky API request to obtain weather data
     }//end onCreate
 
     @Override

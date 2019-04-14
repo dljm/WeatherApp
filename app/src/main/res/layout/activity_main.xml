@@ -58,7 +58,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="24dp"
-            android:text="@{weather.locationLabel ?? `North Bay, ON`, default=`North Bay, ON`}"
+            android:text="@{weather.locationLabel ?? `North Bay`, default=`North Bay`}"
             android:textColor="@android:color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/timeValue"
